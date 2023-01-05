@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 
 import { Animal } from 'src/app/Animal';
 
+import { ListService } from 'src/app/services/list.service';
+
 @Component({
   selector: 'app-list-render',
   templateUrl: './list-render.component.html',
@@ -10,17 +12,27 @@ import { Animal } from 'src/app/Animal';
 export class ListRenderComponent {
 
 
-  animals: Animal[] = [
-    { name :"Turca", type: "Dog", age: 0 },
-    { name: "Tom", type: "Cat", age: 1 },
-    { name: "Frida", type: "Dog", age: 5 },
-    { name: "Bob", type: "Horse", age: 3 }
-  ];
+  constructor(private listService:ListService){
+
+    this.getAnimals();
+
+  }
+
+  animals: Animal[] = [];
 
   animalDetails: string = "";
   showAge(animal:Animal):void {
     this.animalDetails = `O pet ${animal.name} tem ${animal.age} anos!`;
     
+  }
+
+  removeAnimal(animal :Animal):void{
+    this.animals = this.animals.filter((a)=> animal.name !==a.name) 
+    this.listService.remove(animal.id).subscribe();
+  }
+
+  getAnimals():void{
+    this.listService.getAll().subscribe( (animals) => (this.animals = animals));
   }
 
 }
